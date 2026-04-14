@@ -1,0 +1,8 @@
+[project]
+name = "data-pipeline-mcp-lab"
+version = "0.1.0"
+description = "Hands-on Lab: Code Review & Bug Fix with Bob Shell"
+requires-python = ">=3.12"
+dependencies = [
+    "fastmcp>=2.0.0",
+]
