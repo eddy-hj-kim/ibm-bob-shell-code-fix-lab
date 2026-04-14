@@ -20,13 +20,13 @@ In this lab, you will use **Bob Shell** to perform an automated code review on a
 
 The server exposes **5 MCP tools**:
 
-| Tool | Description |
-|---|---|
-| `ingest_transactions` | Fetch paginated transaction records |
-| `get_revenue_summary` | Calculate total revenue |
-| `enrich_and_group` | Enrich and group records by region or product |
-| `validate_transactions` | Validate records against business rules |
-| `export_transactions` | Export records to JSON or CSV |
+| Tool                    | Description                                   |
+| ----------------------- | --------------------------------------------- |
+| `ingest_transactions`   | Fetch paginated transaction records           |
+| `get_revenue_summary`   | Calculate total revenue                       |
+| `enrich_and_group`      | Enrich and group records by region or product |
+| `validate_transactions` | Validate records against business rules       |
+| `export_transactions`   | Export records to JSON or CSV                 |
 
 There are bugs hidden across the codebase. Bob Shell will find and fix them all.
 
@@ -38,7 +38,7 @@ Clone the repository and install dependencies using `uv`:
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
-cd bob_shell_code_fix_lab
+cd ibm-bob-shell-code-fix-lab
 uv sync
 ```
 
@@ -49,6 +49,7 @@ uv sync
 Run Bob shell to perform a full code review and automatically fix all bugs:
 
 **Using Bob Shell:**
+
 ```bash
 bob --yolo -p "
   Review all source files in the @mcp_server/ directory including @mock_data.py.
@@ -69,6 +70,7 @@ After the agent finishes, open `review.md` to see what was found and fixed befor
 Run Bob Shell to generate test cases for each MCP tool and validate all fixes:
 
 **Using Bob:**
+
 ```bash
 bob --yolo -p "
   Based on the fixes documented in @review.md,
