@@ -1,0 +1,60 @@
+# This workflow creates a description of changes when a PR is created
+name: Summarise pull request changes
+permissions:
+    pull-requests: write
+on:
+    pull_request:
+        types: [opened, synchronize]
+jobs:
+    pr-analysis:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+            - run: git fetch origin ${GITHUB_HEAD_REF}:${GITHUB_HEAD_REF}
+            - run: git fetch origin ${GITHUB_BASE_REF}:${GITHUB_BASE_REF}
+            - name: Use Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24.x"
+            - run: curl -fsSL https://bob.ibm.com/download/bobshell.sh | bash -s -- --pm npm
+            - run: export PATH="/root/.bob/bin:${PATH}" && bob --version
+            - name: Generate PR description
+              env:
+                  BOBSHELL_API_KEY: ${{ secrets.BOBSHELL_API_KEY }}
+              run: |
+                  exec 3>&1
+                  BOB_SUMMARY_OUTPUT=$(BOBSHELL_API_KEY=$BOBSHELL_API_KEY && bob --chat-mode=pr-description-writer -p "Generate a detailed PR description for ${GITHUB_REF}. Source branch is ${GITHUB_HEAD_REF} and target branch is ${GITHUB_BASE_REF}" | tee /dev/fd/3)
+                  exec 3>&-
+                  {
+                    echo "BOB_SUMMARY_OUTPUT<<EOF"
+                    echo "$BOB_SUMMARY_OUTPUT" | sed '1d;$d' | awk 'BEGIN{RS="---output---"} END{print}'
+                    echo "EOF"
+                  } >> "$GITHUB_ENV"
+            - name: Create PR summary comment
+              uses: peter-evans/create-or-update-comment@v5
+              with:
+                  issue-number: ${{ github.event.pull_request.number }}
+                  body: |
+                      Bob-generated PR Summary:
+                      ${{ env.BOB_SUMMARY_OUTPUT }}
+            - name: Generate PR code review
+              env:
+                  BOBSHELL_API_KEY: ${{ secrets.BOBSHELL_API_KEY }}
+              run: |
+                  exec 3>&1
+                  BOB_CODE_REVIEW_OUTPUT=$(BOBSHELL_API_KEY=$BOBSHELL_API_KEY && bob --chat-mode=code-reviewer -p "Help me to review this pull request: ${GITHUB_REF}. Source branch is ${GITHUB_HEAD_REF} and target branch is ${GITHUB_BASE_REF}" | tee /dev/fd/3)
+                  exec 3>&-
+                  {
+                    echo "BOB_CODE_REVIEW_OUTPUT<<EOF"
+                    echo "$BOB_CODE_REVIEW_OUTPUT" | sed '1d;$d' | awk 'BEGIN{RS="---output---"} END{print}'
+                    echo "EOF"
+                  } >> "$GITHUB_ENV"
+            - name: Create PR code review comment
+              uses: peter-evans/create-or-update-comment@v5
+              with:
+                  issue-number: ${{ github.event.pull_request.number }}
+                  body: |
+                      Bob-generated PR Code Review:
+                      ${{ env.BOB_CODE_REVIEW_OUTPUT }}
