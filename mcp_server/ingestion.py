@@ -30,7 +30,7 @@ def fetch_transactions(
 
     total = len(records)
 
-    start = page * page_size
+    start = (page - 1) * page_size
     end = start + page_size
     page_records = records[start:end]
 

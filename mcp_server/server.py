@@ -60,7 +60,7 @@ def get_revenue_summary(status_filter: Optional[str] = None) -> str:
         total_revenue = sum(
             r["quantity"] * r["unit_price"]
             for r in records
-            if r.get("status") == "completed"
+            if r.get("status") == "completed" and r.get("quantity") is not None
         )
         return json.dumps({
             "success": True,

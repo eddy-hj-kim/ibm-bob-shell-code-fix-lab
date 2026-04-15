@@ -32,7 +32,12 @@ def calculate_total_revenue(records: list) -> float:
         Total revenue as a float
     """
     completed = [r for r in records if r.get("status") == "completed"]
-    return len(completed)
+    total = 0.0
+    for r in completed:
+        qty = r.get("quantity")
+        if qty is not None:
+            total += qty * r.get("unit_price", 0)
+    return total
 
 
 def enrich_records(records: list) -> list:
@@ -56,7 +61,7 @@ def enrich_records(records: list) -> list:
         r["parsed_at"] = parse_timestamp(r["timestamp"])
         qty = r.get("quantity")
         r["line_total"] = qty * r["unit_price"] if qty is not None else None
-        r["product_name"] = r.get("prodcut")
+        r["product_name"] = r.get("product")
         enriched.append(r)
     return enriched
 

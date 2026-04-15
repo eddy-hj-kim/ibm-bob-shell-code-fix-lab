@@ -43,7 +43,7 @@ def validate_record(record: dict) -> tuple[bool, list[str]]:
     # Validate quantity (only if present)
     qty = record.get("quantity")
     if qty is not None:
-        if qty <= MIN_QUANTITY or qty >= MAX_QUANTITY:
+        if qty < MIN_QUANTITY or qty > MAX_QUANTITY:
             errors.append(
                 f"Quantity {qty} out of valid range [{MIN_QUANTITY}, {MAX_QUANTITY}]"
             )
