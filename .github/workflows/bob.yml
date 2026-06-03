@@ -25,7 +25,7 @@ jobs:
                   BOBSHELL_API_KEY: ${{ secrets.BOBSHELL_API_KEY }}
               run: |
                   exec 3>&1
-                  BOB_SUMMARY_OUTPUT=$(BOBSHELL_API_KEY=$BOBSHELL_API_KEY && bob --chat-mode=pr-description-writer -p "Generate a detailed PR description for ${GITHUB_REF}. Source branch is ${GITHUB_HEAD_REF} and target branch is ${GITHUB_BASE_REF}" | tee /dev/fd/3)
+                  BOB_SUMMARY_OUTPUT=$(BOBSHELL_API_KEY=$BOBSHELL_API_KEY && bob --accept-license --chat-mode=pr-description-writer -p "Generate a detailed PR description for ${GITHUB_REF}. Source branch is ${GITHUB_HEAD_REF} and target branch is ${GITHUB_BASE_REF}" | tee /dev/fd/3)
                   exec 3>&-
                   {
                     echo "BOB_SUMMARY_OUTPUT<<EOF"
@@ -44,7 +44,7 @@ jobs:
                   BOBSHELL_API_KEY: ${{ secrets.BOBSHELL_API_KEY }}
               run: |
                   exec 3>&1
-                  BOB_CODE_REVIEW_OUTPUT=$(BOBSHELL_API_KEY=$BOBSHELL_API_KEY && bob --chat-mode=code-reviewer -p "Help me to review this pull request: ${GITHUB_REF}. Source branch is ${GITHUB_HEAD_REF} and target branch is ${GITHUB_BASE_REF}" | tee /dev/fd/3)
+                  BOB_CODE_REVIEW_OUTPUT=$(BOBSHELL_API_KEY=$BOBSHELL_API_KEY && bob --accept-license --chat-mode=code-reviewer -p "Help me to review this pull request: ${GITHUB_REF}. Source branch is ${GITHUB_HEAD_REF} and target branch is ${GITHUB_BASE_REF}" | tee /dev/fd/3)
                   exec 3>&-
                   {
                     echo "BOB_CODE_REVIEW_OUTPUT<<EOF"
